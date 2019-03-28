@@ -5,19 +5,17 @@ import CardSection from './CardSection';
 class Card extends Component {
     render() {
         return (
-            <View>
-                <CardSection />
+            <View style={{alignItems: 'center', backgroundColor: '#FFE345'}}>
+                
                 <Image 
                         style={{width:100, height:100}}
                         source={{ uri: 'https://goo.gl/Qzu7py' }} />
                 <Text> With You </Text>
                 <Text> R&B </Text>
-                <CardSection />
-                <CardSection />
                 <Image 
                         style={{width:200, height:200}}
                         source={{ uri: 'http://musicstation.kapook.com/files_music2008/picture/4/20767.jpg' }} />
-                <CardSection>
+                
                     <View style={styles.button}>
                         <View style={{ width: 100, backgroundColor: 'red' }}>
                             <Button
@@ -25,7 +23,7 @@ class Card extends Component {
                             />
                         </View>
                     </View>
-           </CardSection>
+            
            
             </View>
 
