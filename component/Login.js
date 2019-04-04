@@ -41,7 +41,7 @@ class Login extends Component {
                     secureTextEntry
                     style={{ height: 80, fontWeight: 'bold', fontSize: 25 }}
                     placeholder="Password"
-                    value={this.state.password}
+                    value={this.state.ps600assword}
                     onChangeText={this.onChangePassword.bind(this)}
                 
             />
