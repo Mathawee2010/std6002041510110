@@ -1,56 +1,94 @@
-import React, { Component } from 'react';
-import { Text, View, TextInput, Button } from 'react-native';
+    
+import React from 'react';
+import { View, Text, TextInput, Button } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 
-// write component
-class Login extends Component {
-    constructor(){
-        super()
+let style = {
+    input: {
+        fontSize: 18, 
+        borderBottomColor: "#CC0000", 
+        borderBottomWidth: 2,
+        marginBottom: 20
+    }
+}
+
+export default class Login extends React.Component {
+    static navigationOptions = {
+        title: "Login",
+        headerStyle: {
+            backgroundColor: "#99FFFF",
+        },
+        
+    };
+    
+    constructor() {
+        super();
+
         this.state = {
-            email: '',
-            password: ''
+            email: "",
+            password: "" 
+        };
+    }
+
+    async componentDidMount() {
+        try {
+            if (await AsyncStorage.getItem("login_token") !== null) {
+                this.props.navigation.navigate("Me");
+            }
+        } catch (error) {
+            console.error(error);
         }
-        this.onChangeEmail = this.onChangeEmail.bind(this)
     }
-    onChangeEmail(e){
-        console.log('onChangeEmail', e)
-        this.setState({email: e})
+
+    goLogin() {
+        axios.post("http://128.199.240.120:9999/api/auth/login", {
+            email: this.state.email,
+            password: this.state.password
+        }).then(async function (response) {
+            // alert("Logined !");
+
+            console.log(response.data.data.token);
+            try {
+                await AsyncStorage.setItem("login_token", response.data.data.token);
+            } catch (error) {
+                alert("Save token error !");
+
+                return;
+            }
+
+            this.props.navigation.navigate("Me");
+        }.bind(this))
+        .catch(function (error) {
+            alert("Login fail !");
+
+            console.log(error);
+        });
     }
-    onChangePassword(e) {
-        console.log('onChangePassword', e)
-        this.setState({ password: e})
-    }
-    onPress() {
-        console.log(this.setState)
-        const url = 'http://128.199.240.120:9999/api/auth/login'
-        axios.post(url, this.state)
-            .then(response => {
-                console.log(' token ', response.data.data.token)
-            })
-    }
+
     render() {
         return (
-            <View>
-              <TextInput
-                style={{ hight: 20, fontWeight: 'bold', fontSize: 25 }}
-                placeholder="Email"
-                value={this.state.email}
-                onChangeText={this.onChangeEmail}
-            />
-                <TextInput
-                    secureTextEntry
-                    style={{ height: 80, fontWeight: 'bold', fontSize: 25 }}
-                    placeholder="Password"
-                    value={this.state.ps600assword}
-                    onChangeText={this.onChangePassword.bind(this)}
-                
-            />
-                <Button title="Login"
-                onPress={this.onPress.bind(this)}
-            />
-                
+            <View style={{ paddingTop: 20 }}>
+                <Text style={{ textAlign: "center", fontSize: 28, color: "#F39C12" }}>Login Now</Text>
+                <View style={{ padding: 20 }}>
+                    <TextInput
+                        placeholder="Email"
+                        onChangeText={(text) => this.setState({ email: text })}
+                        value={this.state.email}
+                        style={style.input}
+                    />
+
+                    <TextInput
+                        placeholder="Password"
+                        onChangeText={(text) => this.setState({ password: text })}
+                        value={this.state.password}
+                        style={style.input}
+                        secureTextEntry
+                    />
+
+                    <Button title="Login" color="#0099FF"onPress={this.goLogin.bind(this)} />
+                </View>
             </View>
         );
     }
 }
-export default Login;
